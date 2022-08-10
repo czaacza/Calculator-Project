@@ -5,6 +5,8 @@ const backspaceButton = document.querySelector(".btn--backspace");
 const changeSignButton = document.querySelector(".btn--change-sign");
 const percentButton = document.querySelector(".btn--percent");
 const commaButton = document.querySelector(".btn--comma");
+
+const actionButtons = document.querySelectorAll(".btn--action");
 const plusButton = document.querySelector(".btn--plus");
 
 const historyText = document.querySelector(".history-bar-text");
@@ -36,10 +38,13 @@ percentButton.addEventListener("click", changeToPercent);
 // ADD COMMA
 commaButton.addEventListener("click", addComma);
 
-// PLUS
-plusButton.addEventListener("click", () => {
-  saveInput(operationSign);
-});
+// ACTION BUTTONS
+for (let actionButton of actionButtons) {
+  let operationSign;
+  actionButton.addEventListener("click", () => {
+    saveInput(actionButton.classList[2]);
+  });
+}
 
 // INPUT LISTENER
 input.addEventListener("keydown", (e) => {
@@ -90,9 +95,35 @@ function clearInput() {
   input.value = "";
 }
 
-function saveInput(operationSign) {
+function saveInput(buttonOperationClassName) {
   historyNumber = +input.value;
   historyText.innerHTML = historyNumber;
+  switch (buttonOperationClassName) {
+    case "btn--1/x":
+      console.log("1/x");
+      break;
+    case "btn--power":
+      console.log("power");
+      break;
+    case "btn--sqrt":
+      console.log("sqrt");
+      break;
+    case "btn--divide":
+      console.log("divide");
+      break;
+    case "btn--multiply":
+      console.log("multiply");
+      break;
+    case "btn--minus":
+      console.log("minus");
+      break;
+    case "btn--plus":
+      console.log("plus");
+      break;
+    case " btn--equals":
+      console.log("equals");
+      break;
+  }
 }
 
 function init() {
