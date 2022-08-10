@@ -5,8 +5,11 @@ const backspaceButton = document.querySelector(".btn--backspace");
 const changeSignButton = document.querySelector(".btn--change-sign");
 const percentButton = document.querySelector(".btn--percent");
 const commaButton = document.querySelector(".btn--comma");
+const plusButton = document.querySelector(".btn--plus");
 
-let actualNumberString = "";
+const historyText = document.querySelector(".history-bar-text");
+
+let historyNumber = "";
 
 // ADD DIGITS
 for (let digitButton of digitButtons) {
@@ -30,14 +33,33 @@ changeSignButton.addEventListener("click", changeSign);
 // PERCENT
 percentButton.addEventListener("click", changeToPercent);
 
+// ADD COMMA
 commaButton.addEventListener("click", addComma);
 
+// PLUS
+plusButton.addEventListener("click", () => {
+  saveInput(operationSign);
+});
+
 // INPUT LISTENER
-input.addEventListener("input", () => {
-  actualNumberString = input.value;
+input.addEventListener("keydown", (e) => {
+  console.log(e.key);
+  if (e.key === "/") {
+  } else if (e.key === "+") {
+  } else if (e.key === "-") {
+  } else if (e.key === "=") {
+  } else if (e.key === ",") {
+    addComma();
+  } else if (e.key === "*") {
+  } else if (isNaN(+e.key) && e.key != "Backspace" && e.key != "Delete") {
+    e.preventDefault();
+  }
 });
 
 function addDigit(digit) {
+  if (input.value[0] === "0") {
+    input.value = input.value.slice(1);
+  }
   input.value += digit;
 }
 
@@ -66,6 +88,11 @@ function changeToPercent() {
 
 function clearInput() {
   input.value = "";
+}
+
+function saveInput(operationSign) {
+  historyNumber = +input.value;
+  historyText.innerHTML = historyNumber;
 }
 
 function init() {
