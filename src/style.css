@@ -1,0 +1,89 @@
+:root {
+  --background-color: #1f1f1f;
+  --button-color: #131313;
+  --button-darker-color: #060606;
+  --button-hover: #4a4a4a;
+  --button-clicked: #968d84;
+  --white: #ededed;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  color: var(--white);
+  font-size: 1.3rem;
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 400;
+}
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+body {
+  background-color: #a5d8ff;
+}
+.container-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.container {
+  background-color: var(--background-color);
+  gap: 0.2rem;
+  width: 40rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.header {
+  background-color: var(--button-darker-color);
+
+  opacity: 0.5;
+  height: 3rem;
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn {
+  border: none;
+  background-color: var(--button-color);
+  opacity: 0.8;
+  padding: 2rem 2.4rem;
+}
+.btn--darker {
+  font-size: 1.6rem;
+  color: #fff;
+  background-color: var(--button-darker-color);
+}
+.btn:hover {
+  background-color: var(--button-hover);
+}
+.btn:active {
+  background-color: var(--button-clicked);
+  animation-name: color-change;
+  animation-duration: 0.3s;
+}
+@keyframes color-change {
+  from {
+    background-color: var(--button-hover);
+  }
+  to {
+    background-color: var(--button-clicked);
+  }
+}
+
+.input {
+  padding: 1rem;
+  grid-column: 1/-1;
+  height: 10rem;
+  font-size: 4.2rem;
+  text-align: right;
+  border: none;
+  color: #fff;
+  background-color: var(--background-color);
+  font-weight: 700;
+}
+.input:focus {
+  outline: none;
+}
