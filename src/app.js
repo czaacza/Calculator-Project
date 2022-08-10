@@ -1,17 +1,18 @@
 const digitButtons = document.querySelectorAll(".btn--digit");
 const input = document.querySelector(".input");
 const clearButtons = document.querySelectorAll(".btn--clear");
-const backspaceButton = document.querySelector(".btn--backspace");
-const changeSignButton = document.querySelector(".btn--change-sign");
-const percentButton = document.querySelector(".btn--percent");
-const commaButton = document.querySelector(".btn--comma");
+const backspaceButton = document.querySelector("#backspace");
+const changeSignButton = document.querySelector("#change-sign");
+const percentButton = document.querySelector("#percent");
+const commaButton = document.querySelector("#comma");
 
 const actionButtons = document.querySelectorAll(".btn--action");
-const plusButton = document.querySelector(".btn--plus");
 
-const historyText = document.querySelector(".history-bar-text");
+const historyTextField = document.querySelector(".history-bar-text");
 
-let historyNumber = "";
+let historyValue = "";
+let operation = "";
+let isOperationActive = false;
 
 // ADD DIGITS
 for (let digitButton of digitButtons) {
@@ -42,7 +43,8 @@ commaButton.addEventListener("click", addComma);
 for (let actionButton of actionButtons) {
   let operationSign;
   actionButton.addEventListener("click", () => {
-    saveInput(actionButton.classList[2]);
+    saveInput();
+    operation = actionButton.id;
   });
 }
 
@@ -95,35 +97,45 @@ function clearInput() {
   input.value = "";
 }
 
-function saveInput(buttonOperationClassName) {
-  historyNumber = +input.value;
-  historyText.innerHTML = historyNumber;
-  switch (buttonOperationClassName) {
-    case "btn--1/x":
-      console.log("1/x");
+function saveInput() {
+  let result;
+  let currentValue = +input.value;
+  switch (operation) {
+    case "1/x":
+      result = 1 / currentValue;
+    case "power":
+      result = currentValue * currentValue;
       break;
-    case "btn--power":
-      console.log("power");
+    case "sqrt":
+      result = Math.sqrt(currentValue);
       break;
-    case "btn--sqrt":
-      console.log("sqrt");
+    case "divide":
+      result = historyValue / currentValue;
       break;
-    case "btn--divide":
-      console.log("divide");
+    case "multiply":
+      result = historyValue * currentValue;
       break;
-    case "btn--multiply":
-      console.log("multiply");
+    case "minus":
+      result = historyValue - currentValue;
       break;
-    case "btn--minus":
-      console.log("minus");
+    case "plus":
+      result = historyValue + currentValue;
       break;
-    case "btn--plus":
-      console.log("plus");
-      break;
-    case " btn--equals":
+    case "equals":
       console.log("equals");
       break;
+    default:
+      result = currentValue;
+      break;
   }
+  historyValue = result;
+  historyTextField.innerHTML = result;
+  input.value = result;
+  isOperationActive = true;
+
+  console.log(`operation: ${operation}`);
+  console.log(`result: ${result}`);
+  console.log(`historyValue: ${historyValue}`);
 }
 
 function init() {

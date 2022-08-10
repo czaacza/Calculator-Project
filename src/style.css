@@ -22,16 +22,18 @@ html {
 body {
   background-color: #e9ecef;
 }
+
 .container-center {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
 }
+
 .container {
   background-color: var(--background-color);
   gap: 0.2rem;
-  width: 40rem;
+  width: 35rem;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 }
