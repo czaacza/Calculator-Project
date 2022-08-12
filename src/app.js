@@ -23,7 +23,10 @@ for (let digitButton of digitButtons) {
 }
 
 for (let clearButton of clearButtons) {
-  clearButton.addEventListener("click", clearOutput);
+  clearButton.addEventListener("click", () => {
+    clearOutput();
+    historyTextField.innerHTML = "";
+  });
 }
 
 // BACKSPACE
@@ -69,20 +72,27 @@ window.addEventListener("keydown", (e) => {
   } else if (!isNaN(+e.key)) {
     addDigit(e.key);
   }
+
+  if (output.innerHTML.length > 13) {
+    output.innerHTML = output.innerHTML.slice(1, -1);
+  }
 });
 
 function makeOperation() {
   let result = getResult();
+  console.log(result);
   assignHistoryValue(result);
 
   if (currentOperation === "equals") {
-    output.innerHTML = result;
-    clearOutputBeforeAddDigit = true;
     currentOperation = "";
     assignHistoryValue("");
   } else {
     clearOutput();
   }
+
+  output.innerHTML = result;
+  clearOutputBeforeAddDigit = true;
+  historyTextField.innerHTML += ` ${getOperationSymbol()} `;
 
   console.log(`lastOperation: ${lastOperation}`);
   console.log(`result: ${result}`);
@@ -98,6 +108,9 @@ function addDigit(digit) {
     clearOutputBeforeAddDigit = false;
   }
   output.innerHTML += digit;
+  if (output.innerHTML.length > 12) {
+    output.innerHTML = output.innerHTML.slice(0, -1);
+  }
 }
 
 function addComma() {
@@ -135,14 +148,6 @@ function assignHistoryValue(value) {
 function getResult() {
   let currentValue = +output.innerHTML;
   switch (lastOperation) {
-    case "1/x":
-      result = 1 / currentValue;
-    case "power":
-      result = currentValue * currentValue;
-      break;
-    case "sqrt":
-      result = Math.sqrt(currentValue);
-      break;
     case "divide":
       result = historyValue / currentValue;
       break;
@@ -162,7 +167,45 @@ function getResult() {
       result = currentValue;
       break;
   }
+
+  switch (currentOperation) {
+    case "1/x":
+      result = 1 / currentValue;
+      break;
+    case "power":
+      result = currentValue * currentValue;
+      break;
+    case "sqrt":
+      result = Math.sqrt(currentValue);
+      break;
+    default:
+      break;
+  }
   return result;
+}
+
+function getOperationSymbol() {
+  let operationSymbol = "";
+  switch (currentOperation) {
+    case "divide":
+      operationSymbol = "/";
+      break;
+    case "multiply":
+      operationSymbol = "*";
+      break;
+    case "minus":
+      operationSymbol = "-";
+      break;
+    case "plus":
+      operationSymbol = "+";
+      break;
+    case "equals":
+      operationSymbol = "=";
+      break;
+    default:
+      break;
+  }
+  return operationSymbol;
 }
 
 function init() {
