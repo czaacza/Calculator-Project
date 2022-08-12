@@ -10,10 +10,10 @@ const actionButtons = document.querySelectorAll(".btn--action");
 
 const historyTextField = document.querySelector(".history-bar-text");
 
-let outputText = outputText;
 let historyValue = "";
 let lastOperation = "";
 let currentOperation = "";
+let clearOutputBeforeAddDigit = false;
 
 // ADD DIGITS
 for (let digitButton of digitButtons) {
@@ -23,7 +23,7 @@ for (let digitButton of digitButtons) {
 }
 
 for (let clearButton of clearButtons) {
-  clearButton.addEventListener("click", clearInput);
+  clearButton.addEventListener("click", clearOutput);
 }
 
 // BACKSPACE
@@ -45,7 +45,7 @@ for (let actionButton of actionButtons) {
   let operationSign;
   actionButton.addEventListener("click", () => {
     currentOperation = actionButton.id;
-    saveInput();
+    makeOperation();
     console.log(`current operation: ${currentOperation}`);
     console.log("--------------------------------");
     lastOperation = currentOperation;
@@ -53,63 +53,35 @@ for (let actionButton of actionButtons) {
 }
 
 // OUTPUT LISTENER
-// output.addEventListener("keydown", (e) => {
-//   console.log(e.key);
-//   if (e.key === "/") {
-//   } else if (e.key === "+") {
-//   } else if (e.key === "-") {
-//   } else if (e.key === "=") {
-//   } else if (e.key === ",") {
-//     addComma();
-//   } else if (e.key === "*") {
-//   } else if (isNaN(+e.key) && e.key != "Backspace" && e.key != "Delete") {
-//     e.preventDefault();
-//   }
-// });
-
-function addDigit(digit) {
-  if (outputText[0] === "0") {
-    outputText = outputText.slice(1);
+window.addEventListener("keydown", (e) => {
+  console.log(e.key);
+  if (e.key === "/") {
+  } else if (e.key === "+") {
+  } else if (e.key === "-") {
+  } else if (e.key === "=") {
+  } else if (e.key === ",") {
+    addComma();
+  } else if (e.key === "*") {
+  } else if (e.key === "Backspace") {
+    removeDigit();
+  } else if (e.key === "Delete") {
+    clearOutput();
+  } else if (!isNaN(+e.key)) {
+    addDigit(e.key);
   }
-  outputText += digit;
-}
+});
 
-function addComma() {
-  if (outputText.includes(".")) {
-    return;
-  }
-  outputText += ".";
-}
-
-function removeDigit() {
-  outputText = outputText.slice(0, -1);
-}
-
-function changeSign() {
-  if (outputText[0] === "-") {
-    outputText = outputText.slice(1);
-    return;
-  }
-  outputText = "-" + outputText;
-}
-
-function changeToPercent() {
-  outputText = outputText / 100;
-}
-
-function clearInput() {
-  outputText = "";
-}
-
-function saveInput() {
+function makeOperation() {
   let result = getResult();
+  assignHistoryValue(result);
 
-  historyValue = result;
-  historyTextField.innerHTML = result;
   if (currentOperation === "equals") {
-    outputText = result;
+    output.innerHTML = result;
+    clearOutputBeforeAddDigit = true;
+    currentOperation = "";
+    assignHistoryValue("");
   } else {
-    outputText = "";
+    clearOutput();
   }
 
   console.log(`lastOperation: ${lastOperation}`);
@@ -117,8 +89,51 @@ function saveInput() {
   console.log(`historyValue: ${historyValue}`);
 }
 
+function addDigit(digit) {
+  if (output.innerHTML[0] === "0") {
+    output.innerHTML = output.innerHTML.slice(1);
+  }
+  if (clearOutputBeforeAddDigit) {
+    clearOutput();
+    clearOutputBeforeAddDigit = false;
+  }
+  output.innerHTML += digit;
+}
+
+function addComma() {
+  if (output.innerHTML.includes(".")) {
+    return;
+  }
+  output.innerHTML += ".";
+}
+
+function removeDigit() {
+  output.innerHTML = output.innerHTML.slice(0, -1);
+}
+
+function changeSign() {
+  if (output.innerHTML[0] === "-") {
+    output.innerHTML = output.innerHTML.slice(1);
+    return;
+  }
+  output.innerHTML = "-" + output.innerHTML;
+}
+
+function changeToPercent() {
+  output.innerHTML = output.innerHTML / 100;
+}
+
+function clearOutput() {
+  output.innerHTML = "";
+}
+
+function assignHistoryValue(value) {
+  historyValue = value;
+  historyTextField.innerHTML = value;
+}
+
 function getResult() {
-  let currentValue = +outputText;
+  let currentValue = +output.innerHTML;
   switch (lastOperation) {
     case "1/x":
       result = 1 / currentValue;
@@ -151,7 +166,7 @@ function getResult() {
 }
 
 function init() {
-  outputText = "";
+  output.innerHTML = "";
 }
 
 init();
