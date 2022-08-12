@@ -1,5 +1,5 @@
 const digitButtons = document.querySelectorAll(".btn--digit");
-const input = document.querySelector(".input");
+const output = document.querySelector(".output");
 const clearButtons = document.querySelectorAll(".btn--clear");
 const backspaceButton = document.querySelector("#backspace");
 const changeSignButton = document.querySelector("#change-sign");
@@ -10,9 +10,10 @@ const actionButtons = document.querySelectorAll(".btn--action");
 
 const historyTextField = document.querySelector(".history-bar-text");
 
+let outputText = outputText;
 let historyValue = "";
-let operation = "";
-let isOperationActive = false;
+let lastOperation = "";
+let currentOperation = "";
 
 // ADD DIGITS
 for (let digitButton of digitButtons) {
@@ -43,64 +44,82 @@ commaButton.addEventListener("click", addComma);
 for (let actionButton of actionButtons) {
   let operationSign;
   actionButton.addEventListener("click", () => {
+    currentOperation = actionButton.id;
     saveInput();
-    operation = actionButton.id;
+    console.log(`current operation: ${currentOperation}`);
+    console.log("--------------------------------");
+    lastOperation = currentOperation;
   });
 }
 
-// INPUT LISTENER
-input.addEventListener("keydown", (e) => {
-  console.log(e.key);
-  if (e.key === "/") {
-  } else if (e.key === "+") {
-  } else if (e.key === "-") {
-  } else if (e.key === "=") {
-  } else if (e.key === ",") {
-    addComma();
-  } else if (e.key === "*") {
-  } else if (isNaN(+e.key) && e.key != "Backspace" && e.key != "Delete") {
-    e.preventDefault();
-  }
-});
+// OUTPUT LISTENER
+// output.addEventListener("keydown", (e) => {
+//   console.log(e.key);
+//   if (e.key === "/") {
+//   } else if (e.key === "+") {
+//   } else if (e.key === "-") {
+//   } else if (e.key === "=") {
+//   } else if (e.key === ",") {
+//     addComma();
+//   } else if (e.key === "*") {
+//   } else if (isNaN(+e.key) && e.key != "Backspace" && e.key != "Delete") {
+//     e.preventDefault();
+//   }
+// });
 
 function addDigit(digit) {
-  if (input.value[0] === "0") {
-    input.value = input.value.slice(1);
+  if (outputText[0] === "0") {
+    outputText = outputText.slice(1);
   }
-  input.value += digit;
+  outputText += digit;
 }
 
 function addComma() {
-  if (input.value.includes(".")) {
+  if (outputText.includes(".")) {
     return;
   }
-  input.value += ".";
+  outputText += ".";
 }
 
 function removeDigit() {
-  input.value = input.value.slice(0, -1);
+  outputText = outputText.slice(0, -1);
 }
 
 function changeSign() {
-  if (input.value[0] === "-") {
-    input.value = input.value.slice(1);
+  if (outputText[0] === "-") {
+    outputText = outputText.slice(1);
     return;
   }
-  input.value = "-" + input.value;
+  outputText = "-" + outputText;
 }
 
 function changeToPercent() {
-  input.value = input.value / 100;
+  outputText = outputText / 100;
 }
 
 function clearInput() {
-  input.value = "";
+  outputText = "";
 }
 
 function saveInput() {
-  let result;
-  let currentValue = +input.value;
-  switch (operation) {
+  let result = getResult();
+
+  historyValue = result;
+  historyTextField.innerHTML = result;
+  if (currentOperation === "equals") {
+    outputText = result;
+  } else {
+    outputText = "";
+  }
+
+  console.log(`lastOperation: ${lastOperation}`);
+  console.log(`result: ${result}`);
+  console.log(`historyValue: ${historyValue}`);
+}
+
+function getResult() {
+  let currentValue = +outputText;
+  switch (lastOperation) {
     case "1/x":
       result = 1 / currentValue;
     case "power":
@@ -122,24 +141,17 @@ function saveInput() {
       result = historyValue + currentValue;
       break;
     case "equals":
-      console.log("equals");
+      result = historyValue;
       break;
     default:
       result = currentValue;
       break;
   }
-  historyValue = result;
-  historyTextField.innerHTML = result;
-  input.value = result;
-  isOperationActive = true;
-
-  console.log(`operation: ${operation}`);
-  console.log(`result: ${result}`);
-  console.log(`historyValue: ${historyValue}`);
+  return result;
 }
 
 function init() {
-  input.value = "";
+  outputText = "";
 }
 
 init();

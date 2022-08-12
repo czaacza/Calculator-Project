@@ -75,7 +75,7 @@ body {
   }
 }
 
-.input {
+.output {
   padding: 1rem;
   grid-column: 1/-1;
   height: 6rem;
@@ -99,8 +99,4 @@ body {
 .history-bar-text {
   color: rgb(187, 185, 185);
   font-size: 1.5rem;
-}
-
-.input:focus {
-  outline: none;
 }
