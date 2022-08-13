@@ -101,7 +101,8 @@ function makeOperation() {
 
 function addDigit(digit) {
   if (output.innerHTML[0] === "0") {
-    output.innerHTML = output.innerHTML.slice(1);
+    if (output.innerHTML[1] != ".")
+      output.innerHTML = output.innerHTML.slice(1);
   }
   if (clearOutputBeforeAddDigit) {
     clearOutput();
@@ -180,6 +181,13 @@ function getResult() {
       break;
     default:
       break;
+  }
+  let resultString = `${result}`;
+  if (resultString.length > 12) {
+    result = `${resultString.slice(0, 5)}e+${resultString.length - 1}`;
+  }
+  if (result < 0) {
+    result = Math.round(result * 10000000000) / 10000000000;
   }
   return result;
 }

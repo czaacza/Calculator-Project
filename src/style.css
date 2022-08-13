@@ -20,7 +20,7 @@ html {
   font-size: 62.5%;
 }
 body {
-  background-color: #e9ecef;
+  background: linear-gradient(to right, #2193b0, #6dd5ed);
 }
 
 .container-center {
