@@ -15,6 +15,9 @@ let lastOperation = "";
 let currentOperation = "";
 let clearOutputBeforeAddDigit = false;
 
+const FONT_SIZE_OUTPUT = "4.2rem";
+const FONT_SIZE_OUTPUT_SMALLER = "2.4rem";
+
 // ADD DIGITS
 for (let digitButton of digitButtons) {
   digitButton.addEventListener("click", () => {
@@ -45,13 +48,8 @@ commaButton.addEventListener("click", addComma);
 
 // ACTION BUTTONS
 for (let actionButton of actionButtons) {
-  let operationSign;
-  actionButton.addEventListener("click", () => {
-    currentOperation = actionButton.id;
-    makeOperation();
-    console.log(`current operation: ${currentOperation}`);
-    console.log("--------------------------------");
-    lastOperation = currentOperation;
+  actionButton.addEventListener("click", function () {
+    makeOperation(this.id);
   });
 }
 
@@ -59,12 +57,17 @@ for (let actionButton of actionButtons) {
 window.addEventListener("keydown", (e) => {
   console.log(e.key);
   if (e.key === "/") {
+    makeOperation("divide");
   } else if (e.key === "+") {
+    makeOperation("plus");
   } else if (e.key === "-") {
-  } else if (e.key === "=") {
+    makeOperation("minus");
+  } else if (e.key === "=" || e.key === "Enter") {
+    makeOperation("equals");
   } else if (e.key === ",") {
     addComma();
   } else if (e.key === "*") {
+    makeOperation("multiply");
   } else if (e.key === "Backspace") {
     removeDigit();
   } else if (e.key === "Delete") {
@@ -78,9 +81,9 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-function makeOperation() {
-  let result = getResult();
-  console.log(result);
+function makeOperation(currentOperation) {
+  console.log(currentOperation);
+  let result = getResult(currentOperation, lastOperation);
   assignHistoryValue(result);
 
   if (currentOperation === "equals") {
@@ -97,12 +100,19 @@ function makeOperation() {
   console.log(`lastOperation: ${lastOperation}`);
   console.log(`result: ${result}`);
   console.log(`historyValue: ${historyValue}`);
+  console.log(`current operation: ${currentOperation}`);
+  console.log("--------------------------------");
+
+  lastOperation = currentOperation;
 }
 
 function addDigit(digit) {
   if (output.innerHTML[0] === "0") {
     if (output.innerHTML[1] != ".")
       output.innerHTML = output.innerHTML.slice(1);
+  }
+  if (output.style.fontSize === FONT_SIZE_OUTPUT_SMALLER) {
+    output.style.fontSize = FONT_SIZE_OUTPUT;
   }
   if (clearOutputBeforeAddDigit) {
     clearOutput();
@@ -146,7 +156,7 @@ function assignHistoryValue(value) {
   historyTextField.innerHTML = value;
 }
 
-function getResult() {
+function getResult(currentOperation, lastOperation) {
   let currentValue = +output.innerHTML;
   switch (lastOperation) {
     case "divide":
@@ -184,10 +194,8 @@ function getResult() {
   }
   let resultString = `${result}`;
   if (resultString.length > 12) {
-    result = `${resultString.slice(0, 5)}e+${resultString.length - 1}`;
-  }
-  if (result < 0) {
-    result = Math.round(result * 10000000000) / 10000000000;
+    result = Math.round(result / 10000000) * 10000000;
+    output.style.fontSize = FONT_SIZE_OUTPUT_SMALLER;
   }
   return result;
 }
